@@ -2,12 +2,16 @@ package gre.jb.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "posts")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
@@ -34,62 +38,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public int getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public AppUser getUser() {
-        return user;
-    }
-
-    public void setUser(AppUser user) {
-        this.user = user;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     @PrePersist
     public void preCreate() {

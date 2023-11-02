@@ -34,7 +34,7 @@ public class AppUser {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
     private String phoneNumber;
-    private String aboutMe;
+    private String about;
     private String status;
     @OneToOne
     @JoinColumn(name = "accountId", unique = true,
