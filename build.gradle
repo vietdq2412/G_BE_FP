@@ -38,8 +38,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    // https://mvnrepository.com/artifact/org.hibernate/hibernate-core-jakarta
-    implementation group: 'org.hibernate', name: 'hibernate-core-jakarta', version: '5.6.9.Final'
+
 
 
 }

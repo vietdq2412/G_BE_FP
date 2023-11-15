@@ -6,9 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IAccountRepo extends JpaRepository<Account, Long> {
-    Account findAccountByUsernameAndPassword(String userName, String password);
+    Account findAccountByEmailAndPassword(String email, String password);
     Account findAccountByUsername(String username);
     boolean existsAccountByUsername(String username);
-    boolean existsAccountByEmail(String email);
-    boolean existsAccountByUsernameOrEmail(String username, String email);
+    boolean existsByEmail(String email);
 }

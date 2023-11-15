@@ -15,7 +15,7 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AccountPrinciple {
     private long accountId;
-    private long userId;
+    private long profileId;
     private String username;
     private String token;
     private Set<Role> roles;

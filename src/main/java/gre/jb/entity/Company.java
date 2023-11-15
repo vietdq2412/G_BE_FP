@@ -19,6 +19,7 @@ public class Company {
     private String name;
     private String about;
     private String address;
+    private String status;
     @OneToOne
     @JoinColumn(name = "accountId", unique = true,
             nullable = false, updatable = false)

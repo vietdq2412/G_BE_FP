@@ -3,9 +3,11 @@ package gre.jb.service.accountService;
 
 import gre.jb.entity.Account;
 import gre.jb.entity.AppUser;
+import gre.jb.entity.Company;
 import gre.jb.entity.Role;
 import gre.jb.repository.IAccountRepo;
 import gre.jb.service.appUserService.IAppUserService;
+import gre.jb.service.companyService.ICompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,11 +22,13 @@ import java.util.Set;
 @Service
 @Transactional
 public class AccountService implements IAccountService {
-    private final String NOT_VERIFIED = "0";
+
     @Autowired
     IAccountRepo accountRepo;
     @Autowired
     IAppUserService appUserService;
+    @Autowired
+    ICompanyService companyService;
 
     @Override
     public List<Account> findAll() {
@@ -32,25 +36,34 @@ public class AccountService implements IAccountService {
     }
 
     /**
-     *
      * @param account include username, email, password
      * @return True if username & email are not existed
      */
     @Override
     public boolean save(Account account) {
-//        boolean check = accountRepo.existsAccountByUsername(account.getUsername()) &&
-//                accountRepo.existsAccountByEmail(account.getEmail());
-        boolean check = accountRepo.existsAccountByUsernameOrEmail(account.getUsername(), account.getEmail());
+        boolean check = accountRepo.existsByEmail(account.getEmail());
         if (!check) {
             accountRepo.save(account);
-            AppUser newUser = AppUser.builder()
-                    .account(findByUserName(account.getUsername()))
-                    .status(NOT_VERIFIED)
-                    .displayName("Nana")
-                    .build();
-            newUser.setEmail(account.getEmail());
-            appUserService.save(newUser);
-            //accountRepo.save(account);
+            account = findByUserName(account.getUsername());
+            Role role = account.getRoles().stream().findFirst().get();
+            long companyRoleId = 3;
+            long userRoleId = 2;
+            String notVerified = "0";
+            if (role.getId() == userRoleId) {
+                AppUser newUser = AppUser.builder()
+                        .account(account)
+                        .status(notVerified)
+                        .displayName("Unknown")
+                        .build();
+                newUser.setEmail(account.getEmail());
+                appUserService.save(newUser);
+            } else if (role.getId() == companyRoleId) {
+                Company company = Company.builder()
+                        .status(notVerified)
+                        .account(account)
+                        .build();
+                companyService.save(company);
+            }
             return true;
         }
         return false;
@@ -68,7 +81,6 @@ public class AccountService implements IAccountService {
     @Override
     public Account findById(Long id) {
         Optional<Account> account = accountRepo.findById(id);
-        boolean c = account.isPresent();
         return account.get();
     }
 
@@ -81,7 +93,7 @@ public class AccountService implements IAccountService {
      * @return account if existed, null if not found this account
      */
     public Account checkLogin(Account account) {
-        Account accountRs = accountRepo.findAccountByUsernameAndPassword(account.getUsername(), account.getPassword());
+        Account accountRs = accountRepo.findAccountByEmailAndPassword(account.getEmail(), account.getPassword());
         return accountRs;
     }
 

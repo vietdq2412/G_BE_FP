@@ -76,7 +76,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         final String pathAccount = "/account/**";
         http.authorizeHttpRequests()
-                .requestMatchers("/**", "/account/login", "/account/register").permitAll()
+                .requestMatchers("/**", "/account/login/**", "/account/register/**").permitAll()
                 .requestMatchers(HttpMethod.GET, pathAccount).hasAnyRole(ROLE_ADMIN, "USER")
                 .requestMatchers(HttpMethod.POST, pathAccount).hasRole(ROLE_ADMIN)
                 .requestMatchers(HttpMethod.DELETE, pathAccount).hasRole(ROLE_ADMIN)

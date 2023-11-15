@@ -1,13 +1,11 @@
 package gre.jb.controller;
 
 
-import gre.jb.entity.Account;
-import gre.jb.entity.AccountPrinciple;
-import gre.jb.entity.AppUser;
-import gre.jb.entity.Role;
+import gre.jb.entity.*;
 import gre.jb.security.JwtService;
 import gre.jb.service.accountService.AccountService;
 import gre.jb.service.appUserService.IAppUserService;
+import gre.jb.service.companyService.ICompanyService;
 import gre.jb.service.roleService.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +25,10 @@ public class AccountController {
     private JwtService jwtService;
     @Autowired
     private AccountService accountService;
-
     @Autowired
     private IAppUserService appUserService;
+    @Autowired
+    private ICompanyService companyService;
     @Autowired
     private IRoleService roleService;
 
@@ -59,12 +58,13 @@ public class AccountController {
     }
 
     /* ---------------- CREATE NEW USER ------------------------ */
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<String> createAccount(@RequestBody Account account) {
+    @RequestMapping(value = "/register/{roleId}", method = RequestMethod.POST)
+    public ResponseEntity<String> createAccount(@RequestBody Account account, @PathVariable String roleId) {
         Set<Role> setRole = new HashSet<>();
-        setRole.add(roleService.findById(2L));
+        Role role = roleService.findById(Long.valueOf(roleId));
+        setRole.add(role);
         account.setRoles(setRole);
-
+        account.setUsername(account.getEmail());
         if (accountService.save(account)) {
             return new ResponseEntity<>("Created!", HttpStatus.CREATED);
         } else {
@@ -79,28 +79,35 @@ public class AccountController {
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping(value = "/login")
     public ResponseEntity<AccountPrinciple> login(@RequestBody Account account) {
         String result = "";
         HttpStatus httpStatus;
         account = accountService.checkLogin(account);
-        AppUser appUser = appUserService.findByAccount(account.getId());
+        long profileId;
+        String status;
+        if (account.getRoles().iterator().next().getId() < 3){
+            AppUser appUser = appUserService.findByAccount(account.getId());
+            profileId = appUser.getId();
+            status = appUser.getStatus();
+        }else {
+            Company company = companyService.findByAccount(account.getId());
+            profileId = company.getId();
+            status = company.getStatus();
+        }
         AccountPrinciple accountPrinciple = null;
+
         try {
-            if (account != null) {
-                result = jwtService.generateTokenLogin(account.getUsername());
-                httpStatus = HttpStatus.OK;
-                accountPrinciple = AccountPrinciple.builder()
-                        .accountId(account.getId())
-                        .userId(appUser.getId())
-                        .username(account.getUsername())
-                        .roles(account.getRoles())
-                        .token(result)
-                        .status(appUser.getStatus())
-                        .build();
-            } else {
-                httpStatus = HttpStatus.BAD_REQUEST;
-            }
+            result = jwtService.generateTokenLogin(account.getUsername());
+            httpStatus = HttpStatus.OK;
+            accountPrinciple = AccountPrinciple.builder()
+                    .accountId(account.getId())
+                    .profileId(profileId)
+                    .username(account.getUsername())
+                    .roles(account.getRoles())
+                    .token(result)
+                    .status(status)
+                    .build();
         } catch (Exception ex) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
