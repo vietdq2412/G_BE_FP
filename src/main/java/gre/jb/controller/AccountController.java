@@ -32,8 +32,12 @@ public class AccountController {
     @Autowired
     private IRoleService roleService;
 
+    @GetMapping("/getCompanyProfile/{id}")
+    public ResponseEntity<Company> getCompanyProfile(@PathVariable Long id){
+        return new ResponseEntity<>(companyService.findById(id), HttpStatus.OK);
+    }
 
-    /* ---------------- GET ALL USER ------------------------ */
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<List<Account>> getAllAccounts() {
         List<Account> list = accountService.findAll();
@@ -47,7 +51,6 @@ public class AccountController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    /* ---------------- GET USER BY ID ------------------------ */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Object> getAccountById(@PathVariable Long id) {
         Account account = accountService.findById(id);
@@ -57,7 +60,6 @@ public class AccountController {
         return new ResponseEntity<>("Not Found User", HttpStatus.NO_CONTENT);
     }
 
-    /* ---------------- CREATE NEW USER ------------------------ */
     @RequestMapping(value = "/register/{roleId}", method = RequestMethod.POST)
     public ResponseEntity<String> createAccount(@RequestBody Account account, @PathVariable String roleId) {
         Set<Role> setRole = new HashSet<>();
@@ -72,7 +74,6 @@ public class AccountController {
         }
     }
 
-    /* ---------------- DELETE USER ------------------------ */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteAccountById(@PathVariable Long id) {
         accountService.delete(id);
@@ -116,6 +117,7 @@ public class AccountController {
 
     @GetMapping("/logout")
     public ResponseEntity<Integer> logout(int tokenStatus) {
+
         return new ResponseEntity<>(tokenStatus, HttpStatus.PROXY_AUTHENTICATION_REQUIRED);
     }
 

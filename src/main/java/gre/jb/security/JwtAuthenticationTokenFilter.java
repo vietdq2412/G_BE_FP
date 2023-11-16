@@ -2,6 +2,7 @@ package gre.jb.security;
 
 //import gre.jb.controller.AccountController;
 
+import gre.jb.controller.AccountController;
 import gre.jb.entity.Account;
 import gre.jb.service.accountService.AccountService;
 import jakarta.servlet.FilterChain;
@@ -57,8 +58,8 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
-//            AccountController accountController = new AccountController();
-//            accountController.logout(check);
+            AccountController accountController = new AccountController();
+            accountController.logout(check);
         }
         chain.doFilter(request, response);
     }

@@ -18,7 +18,6 @@ public class JobCategoryService implements IJobCatogryService {
     }
 
 
-
     @Override
     public boolean save(JobCategory jobCategory) {
         jobCategoryRepo.save(jobCategory);

@@ -22,9 +22,10 @@ public class Job {
     private String jobLevel;
     private String requiredExperience;
     private String requiredEducation;
+    private String location;
     @OneToMany
     private Set<JobCategory> jobCategory;
     @ManyToOne
-    @JoinColumn(name = "app_user_id")
-    private AppUser user;
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

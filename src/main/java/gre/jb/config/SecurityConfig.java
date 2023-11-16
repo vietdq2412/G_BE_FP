@@ -30,6 +30,8 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @CrossOrigin("*")
 public class SecurityConfig {
     private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_COMPANY = "COMPANY";
+    private static final String ROLE_USER = "USER";
 
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
@@ -75,11 +77,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         final String pathAccount = "/account/**";
+        final String pathJob = "/jobs/**";
+        final String pathCompany = "/company/**";
         http.authorizeHttpRequests()
-                .requestMatchers("/**", "/account/login/**", "/account/register/**").permitAll()
-                .requestMatchers(HttpMethod.GET, pathAccount).hasAnyRole(ROLE_ADMIN, "USER")
+                .requestMatchers( "/account/login/**", "/account/register/**").permitAll()
+                .requestMatchers(HttpMethod.GET, pathAccount).hasAnyRole(ROLE_ADMIN, ROLE_COMPANY)
                 .requestMatchers(HttpMethod.POST, pathAccount).hasRole(ROLE_ADMIN)
                 .requestMatchers(HttpMethod.DELETE, pathAccount).hasRole(ROLE_ADMIN)
+
+                .requestMatchers(HttpMethod.GET, pathJob).hasAnyRole(ROLE_COMPANY, "USER")
+                .requestMatchers(HttpMethod.POST, pathJob).hasRole(ROLE_COMPANY)
+                .requestMatchers(HttpMethod.DELETE, pathJob).hasRole(ROLE_COMPANY)
+                .requestMatchers(HttpMethod.PUT, pathJob).hasRole(ROLE_COMPANY)
+
+                .requestMatchers(HttpMethod.GET, pathCompany).hasAnyRole(ROLE_COMPANY, "USER")
+                .requestMatchers(HttpMethod.POST, pathCompany).hasRole(ROLE_COMPANY)
+                .requestMatchers(HttpMethod.DELETE, pathCompany).hasRole(ROLE_COMPANY)
+                .requestMatchers(HttpMethod.PUT, pathCompany).hasRole(ROLE_COMPANY)
+
                 .requestMatchers(HttpMethod.GET, "/admin/**").hasRole(ROLE_ADMIN)
                 .anyRequest().authenticated()
                 .and().csrf().disable()
