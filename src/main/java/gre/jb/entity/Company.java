@@ -17,7 +17,10 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @Column( columnDefinition = "MEDIUMTEXT")
     private String about;
+    private String email;
     private String address;
     private String logo;
     private String status;

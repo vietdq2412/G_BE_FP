@@ -85,7 +85,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, pathAccount).hasRole(ROLE_ADMIN)
                 .requestMatchers(HttpMethod.DELETE, pathAccount).hasRole(ROLE_ADMIN)
 
-                .requestMatchers(HttpMethod.GET, pathJob).hasAnyRole(ROLE_COMPANY, "USER")
+                .requestMatchers(HttpMethod.GET, pathJob).hasAnyRole(ROLE_COMPANY, ROLE_USER)
                 .requestMatchers(HttpMethod.POST, pathJob).hasRole(ROLE_COMPANY)
                 .requestMatchers(HttpMethod.DELETE, pathJob).hasRole(ROLE_COMPANY)
                 .requestMatchers(HttpMethod.PUT, pathJob).hasRole(ROLE_COMPANY)

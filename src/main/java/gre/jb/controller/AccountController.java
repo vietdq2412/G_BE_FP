@@ -12,9 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 @RestController
@@ -60,17 +59,23 @@ public class AccountController {
         return new ResponseEntity<>("Not Found User", HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/register/{roleId}", method = RequestMethod.POST)
-    public ResponseEntity<String> createAccount(@RequestBody Account account, @PathVariable String roleId) {
+    @PostMapping(value = "/register/{roleId}")
+    public ResponseEntity<Object> createAccount(@RequestBody Account account, @PathVariable String roleId) {
         Set<Role> setRole = new HashSet<>();
         Role role = roleService.findById(Long.valueOf(roleId));
         setRole.add(role);
         account.setRoles(setRole);
         account.setUsername(account.getEmail());
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+
         if (accountService.save(account)) {
-            return new ResponseEntity<>("Created!", HttpStatus.CREATED);
+            body.put("message", "Success!");
+            return new ResponseEntity<>(body, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>("Username or email Existed!", HttpStatus.BAD_REQUEST);
+            body.put("message", "Duplicated Email!");
+            return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -85,34 +90,41 @@ public class AccountController {
         String result = "";
         HttpStatus httpStatus;
         account = accountService.checkLogin(account);
-        long profileId;
-        String status;
-        if (account.getRoles().iterator().next().getId() < 3){
-            AppUser appUser = appUserService.findByAccount(account.getId());
-            profileId = appUser.getId();
-            status = appUser.getStatus();
-        }else {
-            Company company = companyService.findByAccount(account.getId());
-            profileId = company.getId();
-            status = company.getStatus();
-        }
         AccountPrinciple accountPrinciple = null;
 
-        try {
-            result = jwtService.generateTokenLogin(account.getUsername());
-            httpStatus = HttpStatus.OK;
-            accountPrinciple = AccountPrinciple.builder()
-                    .accountId(account.getId())
-                    .profileId(profileId)
-                    .username(account.getUsername())
-                    .roles(account.getRoles())
-                    .token(result)
-                    .status(status)
-                    .build();
-        } catch (Exception ex) {
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (account != null){
+            long profileId;
+            String status;
+            if (account.getRoles().iterator().next().getId() < 3){
+                AppUser appUser = appUserService.findByAccount(account.getId());
+                profileId = appUser.getId();
+                status = appUser.getStatus();
+            }else {
+                Company company = companyService.findByAccount(account.getId());
+                profileId = company.getId();
+                status = company.getStatus();
+            }
+
+            try {
+                result = jwtService.generateTokenLogin(account.getUsername());
+                httpStatus = HttpStatus.OK;
+                accountPrinciple = AccountPrinciple.builder()
+                        .accountId(account.getId())
+                        .profileId(profileId)
+                        .username(account.getUsername())
+                        .roles(account.getRoles())
+                        .token(result)
+                        .status(status)
+                        .build();
+            } catch (Exception ex) {
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+            return new ResponseEntity<>(accountPrinciple, httpStatus);
+        }else {
+            httpStatus = HttpStatus.NON_AUTHORITATIVE_INFORMATION;
+            return new ResponseEntity<>(null, httpStatus);
         }
-        return new ResponseEntity<>(accountPrinciple, httpStatus);
+
     }
 
     @GetMapping("/logout")

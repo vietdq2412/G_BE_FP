@@ -52,6 +52,7 @@ public class AccountService implements IAccountService {
             if (role.getId() == userRoleId) {
                 AppUser newUser = AppUser.builder()
                         .account(account)
+                        .email(account.getEmail())
                         .status(notVerified)
                         .displayName("Unknown")
                         .build();
@@ -60,6 +61,7 @@ public class AccountService implements IAccountService {
             } else if (role.getId() == companyRoleId) {
                 Company company = Company.builder()
                         .status(notVerified)
+                        .email(account.getEmail())
                         .account(account)
                         .build();
                 companyService.save(company);
