@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,6 +18,7 @@ import java.util.List;
 public class JobController {
     @Autowired
     IJobService jobService;
+
     @Autowired
     IJobCatogryService jobCatogryService;
 
@@ -27,7 +29,7 @@ public class JobController {
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<Job>> getAllJobs() {
         List<Job> jobs = jobService.findAll();
         return new ResponseEntity<>(jobs, HttpStatus.OK);
@@ -41,6 +43,7 @@ public class JobController {
 
     @PostMapping
     public ResponseEntity<Void> createJob(@RequestBody Job job) {
+        job.setDate(new Date());
         jobService.save(job);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -55,6 +58,7 @@ public class JobController {
             existingJob.setRequiredEducation(updatedJob.getRequiredEducation());
             existingJob.setJobCategory(updatedJob.getJobCategory());
             existingJob.setCompany(updatedJob.getCompany());
+            existingJob.setDate(new Date());
 
             jobService.save(existingJob);
             return new ResponseEntity<>(HttpStatus.OK);

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "company")
 @Data
@@ -18,7 +20,7 @@ public class Company {
     private Long id;
     private String name;
 
-    @Column( columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String about;
     private String email;
     private String address;
@@ -28,4 +30,6 @@ public class Company {
     @JoinColumn(name = "accountId", unique = true,
             nullable = false, updatable = false)
     private Account account;
+
+
 }

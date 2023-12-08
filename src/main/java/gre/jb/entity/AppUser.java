@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table
@@ -21,14 +22,12 @@ public class AppUser {
     @Column(name = "id", nullable = false)
     private long id;
 
-    @Column(nullable = false, length = 50)
-    private String displayName;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate DOB;
+
+    private String name;
     private String address;
     private String image;
-    private String BGImage;
     private String gender;
 
     @Column(nullable = false, length = 50, unique = true)
@@ -40,6 +39,10 @@ public class AppUser {
     @JoinColumn(name = "accountId", unique = true,
             nullable = false, updatable = false)
     private Account account;
+
+    @ManyToMany
+    private Set<Skill> skills;
+
     public Long getId() {
         return id;
     }

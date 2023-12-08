@@ -33,6 +33,8 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private Date date;
+
     @PrePersist
     public void preCreate() {
         commentAt = new Date();

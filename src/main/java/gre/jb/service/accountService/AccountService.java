@@ -54,7 +54,6 @@ public class AccountService implements IAccountService {
                         .account(account)
                         .email(account.getEmail())
                         .status(notVerified)
-                        .displayName("Unknown")
                         .build();
                 newUser.setEmail(account.getEmail());
                 appUserService.save(newUser);

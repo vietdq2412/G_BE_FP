@@ -79,8 +79,10 @@ public class SecurityConfig {
         final String pathAccount = "/account/**";
         final String pathJob = "/jobs/**";
         final String pathCompany = "/company/**";
+        final String pathAppUser = "/appUser/**";
+        final String pathCv = "/cv/**";
         http.authorizeHttpRequests()
-                .requestMatchers( "/account/login/**", "/account/register/**").permitAll()
+                .requestMatchers( "/account/login/**", "/account/register/**", "/cv/existsByAppUser/**").permitAll()
                 .requestMatchers(HttpMethod.GET, pathAccount).hasAnyRole(ROLE_ADMIN, ROLE_COMPANY)
                 .requestMatchers(HttpMethod.POST, pathAccount).hasRole(ROLE_ADMIN)
                 .requestMatchers(HttpMethod.DELETE, pathAccount).hasRole(ROLE_ADMIN)
@@ -94,6 +96,16 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, pathCompany).hasRole(ROLE_COMPANY)
                 .requestMatchers(HttpMethod.DELETE, pathCompany).hasRole(ROLE_COMPANY)
                 .requestMatchers(HttpMethod.PUT, pathCompany).hasRole(ROLE_COMPANY)
+
+                .requestMatchers(HttpMethod.GET, "/appUser").hasAnyRole(ROLE_ADMIN)
+                .requestMatchers(HttpMethod.GET, pathAppUser).hasAnyRole(ROLE_USER)
+                .requestMatchers(HttpMethod.POST, pathAppUser).hasRole(ROLE_USER)
+                .requestMatchers(HttpMethod.DELETE, pathAppUser).hasRole(ROLE_USER)
+                .requestMatchers(HttpMethod.PUT, pathAppUser).hasRole(ROLE_USER)
+
+                .requestMatchers(HttpMethod.GET, pathCv).hasAnyRole(ROLE_COMPANY, "USER")
+                .requestMatchers(HttpMethod.POST, pathCv).hasRole(ROLE_USER)
+                .requestMatchers(HttpMethod.DELETE, pathCv).hasAnyRole(ROLE_COMPANY, ROLE_USER)
 
                 .requestMatchers(HttpMethod.GET, "/admin/**").hasRole(ROLE_ADMIN)
                 .anyRequest().authenticated()

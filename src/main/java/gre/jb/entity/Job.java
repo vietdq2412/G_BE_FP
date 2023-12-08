@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,11 +29,16 @@ public class Job {
     private String requiredEducation;
     private String location;
     private String jobType;
+    private Date date;
 
     @ManyToMany
     private Set<JobCategory> jobCategory;
+    @ManyToMany
+    private Set<Skill> skills;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+
 }

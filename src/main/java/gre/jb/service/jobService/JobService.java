@@ -1,10 +1,14 @@
 package gre.jb.service.jobService;
 
+import gre.jb.entity.CV;
 import gre.jb.entity.Job;
+import gre.jb.repository.ICvRepo;
 import gre.jb.repository.IJobRepo;
+import gre.jb.service.CvSevice.ICvService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -12,6 +16,8 @@ import java.util.List;
 public class JobService implements IJobService {
     @Autowired
     IJobRepo jobRepo;
+    @Autowired
+    ICvService cvService;
     @Override
     public List findAll() {
         return jobRepo.findAll();

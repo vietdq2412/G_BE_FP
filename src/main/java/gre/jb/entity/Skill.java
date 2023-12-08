@@ -9,23 +9,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "cv")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CV {
+public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String path;
+    private String name;
     private String comment;
-    private String status;
-    private Date date;
 
-    @OneToOne
-    AppUser appUser;
-
-    @ManyToOne
-    private Job job;
 }
