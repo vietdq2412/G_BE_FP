@@ -44,6 +44,11 @@ public class AppUserService implements IAppUserService {
     }
 
     @Override
+    public void deleteSkill(long appUserId, long skillId) {
+        appUserRepo.deleteSkill(appUserId,skillId);
+    }
+
+    @Override
     public void blockUser(Long currentUserId, Long userID) {
         // Do anything
     }

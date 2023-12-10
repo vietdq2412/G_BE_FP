@@ -2,8 +2,12 @@ package gre.jb.controller;
 
 import gre.jb.entity.Job;
 import gre.jb.entity.JobCategory;
+import gre.jb.entity.JobType;
+import gre.jb.entity.Location;
 import gre.jb.service.jobCategoryService.IJobCatogryService;
 import gre.jb.service.jobService.IJobService;
+import gre.jb.service.jobTypeService.IJobTypeService;
+import gre.jb.service.locationService.ILocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +25,26 @@ public class JobController {
 
     @Autowired
     IJobCatogryService jobCatogryService;
+    @Autowired
+    ILocationService locationService;
+    @Autowired
+    IJobTypeService jobTypeService;
 
     @GetMapping("listJobCategories")
     public ResponseEntity<List<JobCategory>> findAllJobCategories() {
         List<JobCategory> jobs = jobCatogryService.findAll();
-        System.out.println(jobs);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+    @GetMapping("listLocations")
+    public ResponseEntity<List<Location>> findAllLocations() {
+        List<Location> locations = locationService.findAll();
+        return new ResponseEntity<>(locations, HttpStatus.OK);
+    }
+
+    @GetMapping("jobTypes")
+    public ResponseEntity<List<JobType>> findAllJobTypes() {
+        List<JobType> jobTypes = jobTypeService.findAll();
+        return new ResponseEntity<>(jobTypes, HttpStatus.OK);
     }
 
     @GetMapping("")
@@ -43,7 +61,7 @@ public class JobController {
 
     @PostMapping
     public ResponseEntity<Void> createJob(@RequestBody Job job) {
-        job.setDate(new Date());
+        job.setCreatedDate(new Date());
         jobService.save(job);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -58,7 +76,7 @@ public class JobController {
             existingJob.setRequiredEducation(updatedJob.getRequiredEducation());
             existingJob.setJobCategory(updatedJob.getJobCategory());
             existingJob.setCompany(updatedJob.getCompany());
-            existingJob.setDate(new Date());
+            existingJob.setCreatedDate(new Date());
 
             jobService.save(existingJob);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -85,6 +103,21 @@ public class JobController {
     @GetMapping("/search/{jobName}")
     public ResponseEntity<List<Job>> searchJobsByName(@PathVariable String jobName) {
         List<Job> jobs = jobService.findJobsByNameContaining(jobName);
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Job>> searchJobs(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long jobTypeId,
+            @RequestParam(required = false) Long locationId,
+            @RequestParam(required = false) String name) {
+
+        JobCategory category = categoryId != null ? jobCatogryService.findById(categoryId) : null;
+        JobType jobType = jobTypeId != null ? jobTypeService.findById(jobTypeId) : null;
+        Location location = locationId != null ? locationService.findById(locationId) : null;
+
+        List<Job> jobs = jobService.findJobsByFilters(category, jobType, location, name);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 }

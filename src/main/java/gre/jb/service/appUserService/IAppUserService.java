@@ -15,5 +15,5 @@ public interface IAppUserService extends IGeneralService<AppUser> {
 
      AppUser findByAccount(Long id);
 
-
+    void deleteSkill(long appUserId, long skillId);
 }

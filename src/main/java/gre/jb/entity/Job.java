@@ -23,13 +23,13 @@ public class Job {
     private String name;
     private String jobLevel;
 
-    @Column( columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
     private String requiredExperience;
     private String requiredEducation;
-    private String location;
-    private String jobType;
-    private Date date;
+    private String address;
+    private Date createdDate;
+    private Date expiredDate;
 
     @ManyToMany
     private Set<JobCategory> jobCategory;
@@ -37,8 +37,9 @@ public class Job {
     private Set<Skill> skills;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    private JobType jobType;
+    @ManyToOne
+    private Location location;
+    @ManyToOne
     private Company company;
-
-
 }
