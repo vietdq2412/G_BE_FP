@@ -9,12 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface IJobRepo extends JpaRepository<Job, Long> {
     List<Job> findJobsByCompany_Id(long companyId);
     List<Job> findJobsByNameContaining(String name);
+
+    List<Job> findJobsByExpiredDateAfterOrderByCreatedDateDesc(Date currentDate);
 
     @Query("SELECT j FROM Job j " +
             "JOIN j.jobCategory jc " +

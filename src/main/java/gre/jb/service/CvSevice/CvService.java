@@ -1,8 +1,12 @@
 package gre.jb.service.CvSevice;
 
 import gre.jb.entity.CV;
+import gre.jb.entity.EmailDTO;
+import gre.jb.entity.Job;
 import gre.jb.repository.ICvRepo;
+import gre.jb.repository.IJobRepo;
 import gre.jb.service.firebaseService.NotificationService;
+import gre.jb.service.gmailService.GmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,24 +18,30 @@ public class CvService implements ICvService {
     @Autowired
     private ICvRepo iCvRepo;
     @Autowired
+    private IJobRepo jobRepo;
+    @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private GmailService gmailService;
 
     @Override
     public List findAll() {
         return iCvRepo.findAll();
     }
 
-    public void testNt() {
-        System.out.println("test");
-        try {
-            notificationService.sendNotification("CV submited!", "A candidate has applied a CV to your job!", "CV_Notify");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public boolean save(CV cv) {
+        long jobId = cv.getJob().getId();
+        Job job = jobRepo.findById(jobId).get();
+
+        EmailDTO emailDTO = EmailDTO.builder()
+                .from(cv.getAppUser().getName())
+                .to(job.getCompany().getEmail())
+                .jobId(jobId)
+                .build();
+
+        gmailService.emailSubmitCV(emailDTO);
         iCvRepo.save(cv);
         return true;
     }
@@ -47,8 +57,23 @@ public class CvService implements ICvService {
         return iCvRepo.findById(id).get();
     }
 
-    public boolean isExisted(long id) {
+    @Override
+    public boolean isExisted(Long id) {
         return iCvRepo.existsById(id);
+    }
+
+    @Override
+    public CV acceptCv(long id) {
+        CV cv = iCvRepo.findById(id).get();
+        cv.setStatus("accepted");
+        return cv;
+    }
+
+    @Override
+    public CV rejectCv(long id) {
+        CV cv = iCvRepo.findById(id).get();
+        cv.setStatus("rejected");
+        return cv;
     }
 
     @Override

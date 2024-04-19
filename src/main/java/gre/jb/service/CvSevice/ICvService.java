@@ -11,4 +11,9 @@ public interface ICvService extends IGeneralService<CV> {
     List<CV> findCVSByJob_Id(long id);
 
     List<CV> findAllByAppUser_Id(long id);
+
+    boolean isExisted(Long id);
+
+    CV acceptCv(long id);
+    CV rejectCv(long id);
 }

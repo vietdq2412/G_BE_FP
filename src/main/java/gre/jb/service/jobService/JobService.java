@@ -9,6 +9,7 @@ import gre.jb.service.CvSevice.ICvService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -56,5 +57,11 @@ public class JobService implements IJobService {
     @Override
     public List<Job> findJobsByFilters(JobCategory category, JobType jobType, Location location, String name) {
         return jobRepo.findByCategoryJobTypeLocationAndName(category, jobType, location, name);
+    }
+
+    @Override
+    public List<Job> findAllAvailableJobs() {
+        List<Job> availableJob = jobRepo.findJobsByExpiredDateAfterOrderByCreatedDateDesc(new Date());
+        return availableJob;
     }
 }

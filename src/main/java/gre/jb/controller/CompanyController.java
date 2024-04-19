@@ -1,7 +1,7 @@
 package gre.jb.controller;
 
 import gre.jb.entity.Company;
-import gre.jb.service.companyService.CompanyService;
+import gre.jb.service.companyService.ICompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 public class CompanyController {
 
     @Autowired
-    private CompanyService companyService;
+    private ICompanyService companyService;
 
     @PostMapping
     public ResponseEntity<Boolean> createCompany(@RequestBody Company company) {

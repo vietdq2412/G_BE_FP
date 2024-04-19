@@ -20,6 +20,7 @@ public class CV {
     private Long id;
     private String path;
     private String comment;
+    private String note;
     private String status;
     private Date date;
 

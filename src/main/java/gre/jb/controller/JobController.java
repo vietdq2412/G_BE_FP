@@ -35,6 +35,7 @@ public class JobController {
         List<JobCategory> jobs = jobCatogryService.findAll();
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
+
     @GetMapping("listLocations")
     public ResponseEntity<List<Location>> findAllLocations() {
         List<Location> locations = locationService.findAll();
@@ -50,6 +51,12 @@ public class JobController {
     @GetMapping("")
     public ResponseEntity<List<Job>> getAllJobs() {
         List<Job> jobs = jobService.findAll();
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<Job>> getAllAvailableJobs() {
+        List<Job> jobs = jobService.findAllAvailableJobs();
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
@@ -70,15 +77,15 @@ public class JobController {
     public ResponseEntity<Void> updateJob(@PathVariable Long id, @RequestBody Job updatedJob) {
         Job existingJob = jobService.findById(id);
         if (existingJob != null) {
-            existingJob.setName(updatedJob.getName());
-            existingJob.setJobLevel(updatedJob.getJobLevel());
-            existingJob.setRequiredExperience(updatedJob.getRequiredExperience());
-            existingJob.setRequiredEducation(updatedJob.getRequiredEducation());
-            existingJob.setJobCategory(updatedJob.getJobCategory());
-            existingJob.setCompany(updatedJob.getCompany());
-            existingJob.setCreatedDate(new Date());
+//            existingJob.setName(updatedJob.getName());
+//            existingJob.setJobLevel(updatedJob.getJobLevel());
+//            existingJob.setRequiredExperience(updatedJob.getRequiredExperience());
+//            existingJob.setRequiredEducation(updatedJob.getRequiredEducation());
+//            existingJob.setJobCategory(updatedJob.getJobCategory());
+//            existingJob.setCompany(updatedJob.getCompany());
+//            existingJob.setCreatedDate(new Date());
 
-            jobService.save(existingJob);
+            jobService.save(updatedJob);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

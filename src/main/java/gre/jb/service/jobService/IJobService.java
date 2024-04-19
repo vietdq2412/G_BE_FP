@@ -13,4 +13,6 @@ public interface IJobService extends IGeneralService<Job> {
     List<Job> findJobsByNameContaining(String jobName);
 
     List<Job> findJobsByFilters(JobCategory category, JobType jobType, Location location, String name);
+
+    List<Job> findAllAvailableJobs();
 }

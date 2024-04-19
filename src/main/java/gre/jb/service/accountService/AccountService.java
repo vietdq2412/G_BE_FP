@@ -11,6 +11,8 @@ import gre.jb.service.companyService.ICompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,8 @@ public class AccountService implements IAccountService {
     IAppUserService appUserService;
     @Autowired
     ICompanyService companyService;
+    @Autowired
+    PasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public List<Account> findAll() {
